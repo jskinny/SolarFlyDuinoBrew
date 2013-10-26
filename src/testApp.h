@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxOpenCv.h"
+#include "ofxCv.h"
 
 #import "ofxSpacebrew.h"
 

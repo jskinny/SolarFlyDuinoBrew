@@ -9,10 +9,6 @@ void testApp::setup(){
     spacebrew.addPublish("noiseFast", "range");
     spacebrew.connect( host, name, description );
     
-//    spacebrew.addSubscribe("datadisplay", Spacebrew::TYPE_BOOLEAN); //"boolean" ); // just typing "boolean" also works
-    
-    // listen to spacebrew events
-//    Spacebrew::addListener(this, spacebrew);
 
     ofSetVerticalSync(true);
 	
@@ -73,14 +69,18 @@ void testApp::update(){
 			nTimesRead++;
 			nBytesRead = nRead;
 		};
-		
+        
+        float fbytesReadString = ofToFloat(bytesReadString);
+        
+        fbytesReadString = ofMap(fbytesReadString, 0, 1023, 10, 12);
+
 		memcpy(bytesReadString, bytesReturned, 3);
 		
-		//bSendSerialMessage = false;
 		readTime = ofGetElapsedTimef();
         
         if ( spacebrew.isConnected() ){
         float noiseFast = ofToFloat(bytesReadString);
+        
 
             spacebrew.sendRange("noiseFast", (noiseFast) );
 	}
@@ -94,11 +94,8 @@ void testApp::draw(){
 		ofSetColor(220);
 	}
 	string msg;
-	//msg += "click to test serial:\n";
-	//msg += "nBytes read " + ofToString(nBytesRead) + "\n";
-	//msg += "nTimes read " + ofToString(nTimesRead) + "\n";
-	msg += "read: " + ofToString(bytesReadString) + "\n";
-	//msg += "(at time " + ofToString(readTime, 3) + ")";
+
+	msg += "solar light level: " + ofToString(bytesReadString) + "\n";
 	font.drawString(msg, 50, 100);
 }
 
@@ -131,13 +128,19 @@ void testApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button){
-    bSendSerialMessage = true;
-    spacebrew.sendBoolean("button", true);
+    if (bSendSerialMessage == true) {
+        bSendSerialMessage = false;
+        spacebrew.sendBoolean("button", false);
+    } else {
+        bSendSerialMessage = true;
+        spacebrew.sendBoolean("button", true);
+    };
+
 }
 
 //--------------------------------------------------------------
 void testApp::mouseReleased(int x, int y, int button){
-	
+
 }
 
 //--------------------------------------------------------------
