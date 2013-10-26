@@ -3,15 +3,16 @@
 //--------------------------------------------------------------
 void testApp::setup(){
 	string host = Spacebrew::SPACEBREW_CLOUD; // "localhost";
-    string name = "of-button-example";
+    string name = "Solar Fly";
     string description = "It's amazing";
     
-    spacebrew.addPublish("button", Spacebrew::TYPE_BOOLEAN);
-    spacebrew.addSubscribe("backgroundOn", Spacebrew::TYPE_BOOLEAN); //"boolean" ); // just typing "boolean" also works
+    spacebrew.addPublish("noiseFast", "range");
     spacebrew.connect( host, name, description );
     
+//    spacebrew.addSubscribe("datadisplay", Spacebrew::TYPE_BOOLEAN); //"boolean" ); // just typing "boolean" also works
+    
     // listen to spacebrew events
-    Spacebrew::addListener(this, spacebrew);
+//    Spacebrew::addListener(this, spacebrew);
 
     ofSetVerticalSync(true);
 	
@@ -37,6 +38,10 @@ void testApp::setup(){
 	nBytesRead = 0;
 	readTime = 0;
 	memset(bytesReadString, 0, 4);
+    
+    ofSetFrameRate(60);
+    
+
 }
 
 //--------------------------------------------------------------
@@ -71,10 +76,15 @@ void testApp::update(){
 		
 		memcpy(bytesReadString, bytesReturned, 3);
 		
-		bSendSerialMessage = false;
+		//bSendSerialMessage = false;
 		readTime = ofGetElapsedTimef();
+        
+        if ( spacebrew.isConnected() ){
+        float noiseFast = ofToFloat(bytesReadString);
+
+            spacebrew.sendRange("noiseFast", (noiseFast) );
 	}
-}
+    }}
 
 //--------------------------------------------------------------
 void testApp::draw(){
@@ -84,17 +94,17 @@ void testApp::draw(){
 		ofSetColor(220);
 	}
 	string msg;
-	msg += "click to test serial:\n";
-	msg += "nBytes read " + ofToString(nBytesRead) + "\n";
-	msg += "nTimes read " + ofToString(nTimesRead) + "\n";
+	//msg += "click to test serial:\n";
+	//msg += "nBytes read " + ofToString(nBytesRead) + "\n";
+	//msg += "nTimes read " + ofToString(nTimesRead) + "\n";
 	msg += "read: " + ofToString(bytesReadString) + "\n";
-	msg += "(at time " + ofToString(readTime, 3) + ")";
+	//msg += "(at time " + ofToString(readTime, 3) + ")";
 	font.drawString(msg, 50, 100);
 }
 
 //--------------------------------------------------------------
 void testApp::onMessage( Spacebrew::Message & m ){
-    if ( m.name == "bSendSerialMessage" ){
+    if ( m.name == "datadisplay" ){
         bSendSerialMessage = m.valueBoolean();
     }
 }
