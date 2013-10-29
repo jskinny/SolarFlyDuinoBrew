@@ -6,7 +6,7 @@ void testApp::setup(){
     string name = "Solar Fly";
     string description = "It's amazing";
     
-    spacebrew.addPublish("noiseFast", "range");
+    spacebrew.addPublish("LightData", "range");
     spacebrew.connect( host, name, description );
     
 
@@ -79,10 +79,10 @@ void testApp::update(){
 		readTime = ofGetElapsedTimef();
         
         if ( spacebrew.isConnected() ){
-        float noiseFast = ofToFloat(bytesReadString);
+        float LightData = ofToFloat(bytesReadString);
         
 
-            spacebrew.sendRange("noiseFast", (noiseFast) );
+            spacebrew.sendRange("LightData", (LightData) );
 	}
     }}
 
